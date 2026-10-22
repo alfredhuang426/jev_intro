@@ -36,7 +36,7 @@ export const slides: Slide[] = [
       <ContentLayout eyebrow="Agenda" title="今天會講的內容">
         <ol className="flex flex-col">
           {AGENDA.map(([title, desc], i) => (
-            <li key={title} className="flex items-baseline gap-12 border-b-2 border-navy/10 py-8">
+            <li key={title} className="flex items-baseline gap-12 border-b-2 border-navy/10 py-8 last:border-b-0">
               <span className="w-[96px] shrink-0 font-mono text-[56px] font-bold text-brand">
                 {String(i + 1).padStart(2, "0")}
               </span>
