@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import SlideFrame from "@/components/SlideFrame";
 import { slides } from "@/slides";
+import { logout } from "./login/actions";
 
 export default function Overview() {
   return (
@@ -9,9 +10,17 @@ export default function Overview() {
       <header className="border-b border-navy/10 bg-white">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-5">
           <Image src="/aiello-logo.svg" alt="aiello" width={118} height={36} priority />
-          <span className="text-sm text-navy/50">
-            {slides.length} 張投影片 · 點選進入，Esc 返回
-          </span>
+          <div className="flex items-center gap-4 text-sm">
+            <span className="text-navy/50">{slides.length} 張投影片 · 點選進入，Esc 返回</span>
+            <form action={logout}>
+              <button
+                type="submit"
+                className="rounded-md px-2 py-1 text-navy/60 ring-1 ring-navy/15 transition hover:text-navy hover:ring-navy/30"
+              >
+                登出
+              </button>
+            </form>
+          </div>
         </div>
       </header>
 

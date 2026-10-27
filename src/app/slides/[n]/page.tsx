@@ -16,5 +16,10 @@ export default async function SlidePage({ params }: PageProps<"/slides/[n]">) {
   if (!Number.isInteger(index) || index < 0 || index >= slides.length) {
     notFound();
   }
-  return <SlideViewer index={index} />;
+  // 投影片內容在 server 渲染，不打包進 client JS（靜態檔不經過 proxy 驗證）
+  return (
+    <SlideViewer index={index} total={slides.length}>
+      {slides[index].content}
+    </SlideViewer>
+  );
 }

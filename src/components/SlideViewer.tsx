@@ -1,14 +1,19 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import SlideFrame from "./SlideFrame";
-import { slides } from "@/slides";
 
-export default function SlideViewer({ index }: { index: number }) {
+export default function SlideViewer({
+  index,
+  total,
+  children,
+}: {
+  index: number;
+  total: number;
+  children: ReactNode;
+}) {
   const router = useRouter();
-  const total = slides.length;
-  const slide = slides[index];
 
   useEffect(() => {
     if (index > 0) router.prefetch(`/slides/${index}`);
@@ -44,7 +49,7 @@ export default function SlideViewer({ index }: { index: number }) {
     <div className="flex h-dvh w-full items-center justify-center bg-navy-deep">
       {/* 依視窗比例決定以寬或高為準，維持 16:9 */}
       <div className="w-[min(100vw,calc(100dvh*16/9))]">
-        <SlideFrame>{slide.content}</SlideFrame>
+        <SlideFrame>{children}</SlideFrame>
       </div>
       <div className="fixed bottom-4 right-6 z-10 rounded-md bg-navy-deep/80 px-2 py-0.5 font-mono text-sm text-white/60">
         {index + 1} / {total}
