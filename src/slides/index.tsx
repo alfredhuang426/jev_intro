@@ -21,7 +21,7 @@ const EVAL_CASES: [string, string, "LLM" | "FAQ"][] = [
 const AGENDA: [string, string][] = [
   ["JEV 是什麼", "和一般 LLM 的差別、三種題型"],
   ["範例", "怎麼呼叫、每種題型的輸入與輸出、多題一起問"],
-  ["JEV 在 Text Agent 的實作", "eb-agent-service：FAQ 分流判官、判斷使用者語言"],
+  ["JEV 在 Text Agent 的實作", "FAQ 分流判官、判斷使用者語言"],
 ];
 
 // 投影片以 1920×1080 的固定尺寸撰寫，由 SlideFrame 等比縮放到容器大小
@@ -302,7 +302,7 @@ answers.is_complaint.noul; // 0.94`}
   // 03 JEV 在 Text Agent 的實作
   {
     title: "章節：JEV 在 Text Agent 的實作",
-    content: <SectionLayout number="03" title="JEV 在 Text Agent 的實作" subtitle="eb-agent-service" />,
+    content: <SectionLayout number="03" title="JEV 在 Text Agent 的實作" subtitle="" />,
   },
   {
     title: "實作 1：問題",
@@ -319,7 +319,7 @@ answers.is_complaint.noul; // 0.94`}
           <div className="flex flex-col justify-center gap-10 text-[34px] leading-normal">
             <div>
               <Tag tone="navy">只做字面比對</Tag>
-              <p className="mt-4">只拿「其他商品」四個字去比 FAQ，不知道使用者是在回答 bot 的選項。</p>
+              <p className="mt-4">只拿「其他商品」四個字去比 FAQ，有可能配對到其他FAQ卡片，不知道使用者其實是在回答 bot 的選項。</p>
             </div>
             <div>
               <Tag>加上 JEV 判官</Tag>
