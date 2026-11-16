@@ -294,8 +294,87 @@ answers.is_complaint.noul; // 0.94`}
   "intent": { "type": "choice", "choice": "cancel", … },
   "urgency": { "type": "score", "score": 1.8, … }
 }`}
-        note="同一個 state、三種題型，一次送出、一次拿回。官方範例：13 題一次問 0.27 秒，分 13 次問合計 2.71 秒。"
+        note={
+          <>
+            同一個 state、三種題型，一次送出、一次拿回。官方範例：13 題一次問 0.27 秒，分 13 次問合計 2.71 秒。
+            <br />
+            <b>題數沒有上限</b>，只要符合 token 限制：state + 全部題目 ≤ 64k、state + 任一題 ≤ 32k（jev-1.13.0）。
+          </>
+        }
       />
+    ),
+  },
+  {
+    title: "confidence 與 probabilities 的差別",
+    content: (
+      <ContentLayout eyebrow="Example · confidence" title="probabilities 和 confidence 差在哪">
+        <div className="flex h-full flex-col gap-8">
+          <div className="grid flex-1 grid-cols-2 gap-10">
+            <Card label="probabilities" title="每個選項各自的機率">
+              <p>所有選項加起來是 1。被選中那項的機率，就是它答對的機率。</p>
+              <p className="mt-4 font-mono text-[26px] text-brand">change_booking: 0.93, cancel: 0.04, …</p>
+            </Card>
+            <Card accent label="confidence" title="把整個分佈濃縮成一個數字">
+              <p>全押在一個選項 = 1，平均分散 = 0。只有 choice、score 有；noul 的機率本身就代表把握。</p>
+              <p className="mt-4 font-mono text-[26px] text-brand">confidence: 0.9</p>
+            </Card>
+          </div>
+          <div className="rounded-2xl bg-zinc-100 px-10 py-6 text-[30px] leading-normal">
+            <b>choice 的算法：</b>(最高機率 − 1/n) ÷ (1 − 1/n)，n 是選項數
+            <br />
+            <span className="text-navy/60">例：choice 範例那頁，(0.93 − 0.25) ÷ 0.75 ≈ 0.9</span>
+          </div>
+        </div>
+      </ContentLayout>
+    ),
+  },
+  {
+    title: "confidence 與 probabilities 怎麼用",
+    content: (
+      <ContentLayout eyebrow="Example · confidence" title="先看 confidence，再看 probability">
+        <div className="grid h-full grid-cols-[1fr_1.2fr] gap-16">
+          <div className="flex flex-col gap-6">
+            <div className="text-[32px] font-bold">confidence 會扣掉選項數的影響</div>
+            <table className="w-full text-[30px] leading-snug">
+              <thead>
+                <tr className="border-b-2 border-navy/20 text-left text-navy/50">
+                  <th className="py-3 font-semibold">選項數</th>
+                  <th className="py-3 font-semibold">最高機率</th>
+                  <th className="py-3 text-right font-semibold">confidence</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ["2", "0.75"],
+                  ["3", "0.67"],
+                  ["10", "0.55"],
+                ].map(([n, p]) => (
+                  <tr key={n} className="border-b border-navy/10">
+                    <td className="py-3">{n}</td>
+                    <td className="py-3 font-mono">{p}</td>
+                    <td className="py-3 text-right font-mono text-brand">0.5</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="mt-auto rounded-2xl bg-navy p-8 text-white">
+              <p className="text-[34px] font-bold">confidence 不是答對的機率</p>
+              <p className="mt-2 text-[28px] text-white/60">它只表示機率集中或分散</p>
+            </div>
+          </div>
+          <div className="flex flex-col justify-between">
+            <div className="flex flex-col gap-12">
+              <Point n="1" title="confidence 太低就先別動作">
+                轉人工、請使用者補充，或退回原本流程。官方範例以 0.5 當底線。
+              </Point>
+              <Point n="2" title="要動作時，用 probability 設門檻">
+                choice 看要採用的那個選項的機率；noul 直接看 noul。風險越高，門檻越高。
+              </Point>
+            </div>
+            <p className="text-[24px] text-navy/50">來源：docs.typesafe.ai〈Confidence〉〈Confidence routing〉</p>
+          </div>
+        </div>
+      </ContentLayout>
     ),
   },
 
