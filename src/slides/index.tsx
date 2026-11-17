@@ -365,10 +365,6 @@ answers.is_complaint.noul; // 0.94`}
 分母 = (1.5 + 0.5 + 0.5 + 1.5) ÷ 4 = 1
 confidence = 1 − 0.40 ÷ 1 = 0.6`}
             />
-            <div className="rounded-2xl bg-zinc-100 p-8 text-[28px] leading-normal">
-              <b>3 個等級，其中兩級各 0.5</b>
-              <p className="mt-2 text-navy/70">相鄰兩級猶豫 → 0.25；最低和最高之間猶豫 → 0</p>
-            </div>
           </div>
         </div>
       </ContentLayout>
