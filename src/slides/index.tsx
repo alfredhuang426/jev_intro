@@ -258,7 +258,7 @@ answers.is_complaint.noul; // 0.94`}
   "urgency": {
     "type": "score",
     "score": 2.6,
-    "confidence": 0.7,
+    "confidence": 0.6,
     "probabilities": {
       "0": 0.01, "1": 0.06, "2": 0.25, "3": 0.68
     }
@@ -320,9 +320,55 @@ answers.is_complaint.noul; // 0.94`}
             </Card>
           </div>
           <div className="rounded-2xl bg-zinc-100 px-10 py-6 text-[30px] leading-normal">
-            <b>choice 的算法：</b>(最高機率 − 1/n) ÷ (1 − 1/n)，n 是選項數
+            <b>choice：</b>(最高機率 − 1/n) ÷ (1 − 1/n)，n 是選項數。
+            <span className="text-navy/60">例：(0.93 − 0.25) ÷ 0.75 ≈ 0.9</span>
             <br />
-            <span className="text-navy/60">例：choice 範例那頁，(0.93 − 0.25) ÷ 0.75 ≈ 0.9</span>
+            <b>score：</b>等級有順序，機率落在離最高等級越遠的地方，confidence 扣得越多。
+          </div>
+        </div>
+      </ContentLayout>
+    ),
+  },
+  {
+    title: "score 的 confidence 怎麼算",
+    content: (
+      <ContentLayout eyebrow="Example · confidence" title="score 的 confidence 怎麼算">
+        <div className="grid h-full grid-cols-[1.1fr_1fr] gap-16">
+          <div className="flex flex-col gap-10">
+            <div className="flex items-center gap-6 rounded-2xl bg-brand-light px-10 py-8 font-mono text-[36px]">
+              <span className="shrink-0">confidence = 1 −</span>
+              <div className="flex flex-col items-center gap-2">
+                <span className="px-4">Σ pᵢ × |i − m|</span>
+                <span className="h-[3px] w-full bg-navy" />
+                <span className="px-4">平均分佈時的值</span>
+              </div>
+            </div>
+            <ul className="flex flex-col gap-4 text-[28px] leading-snug text-navy/80">
+              <li>
+                <code className="font-mono text-brand">pᵢ</code>：等級 i 的機率；
+                <code className="font-mono text-brand">m</code>：機率最高的等級
+              </li>
+              <li>
+                <b>分子</b>：機率加權後，平均離 m 幾格
+              </li>
+              <li>
+                <b>分母</b>：每級機率都一樣時，離中間等級平均幾格
+              </li>
+              <li>算出來小於 0 就取 0</li>
+            </ul>
+          </div>
+          <div className="flex flex-col gap-8">
+            <CodeBlock
+              title="代入 score 範例"
+              code={`// 機率 0.01 / 0.06 / 0.25 / 0.68，m = 3
+分子 = 0.01×3 + 0.06×2 + 0.25×1 = 0.40
+分母 = (1.5 + 0.5 + 0.5 + 1.5) ÷ 4 = 1
+confidence = 1 − 0.40 ÷ 1 = 0.6`}
+            />
+            <div className="rounded-2xl bg-zinc-100 p-8 text-[28px] leading-normal">
+              <b>3 個等級，其中兩級各 0.5</b>
+              <p className="mt-2 text-navy/70">相鄰兩級猶豫 → 0.25；最低和最高之間猶豫 → 0</p>
+            </div>
           </div>
         </div>
       </ContentLayout>
@@ -334,7 +380,7 @@ answers.is_complaint.noul; // 0.94`}
       <ContentLayout eyebrow="Example · confidence" title="先看 confidence，再看 probability">
         <div className="grid h-full grid-cols-[1fr_1.2fr] gap-16">
           <div className="flex flex-col gap-6">
-            <div className="text-[32px] font-bold">confidence 會扣掉選項數的影響</div>
+            <div className="text-[32px] font-bold">同樣的最高機率，選項數不同，意義就不同</div>
             <table className="w-full text-[30px] leading-snug">
               <thead>
                 <tr className="border-b-2 border-navy/20 text-left text-navy/50">
@@ -345,14 +391,14 @@ answers.is_complaint.noul; // 0.94`}
               </thead>
               <tbody>
                 {[
-                  ["2", "0.75"],
-                  ["3", "0.67"],
-                  ["10", "0.55"],
-                ].map(([n, p]) => (
+                  ["2", "0.6", "0.2"],
+                  ["3", "0.6", "0.4"],
+                  ["10", "0.6", "0.56"],
+                ].map(([n, p, c]) => (
                   <tr key={n} className="border-b border-navy/10">
                     <td className="py-3">{n}</td>
                     <td className="py-3 font-mono">{p}</td>
-                    <td className="py-3 text-right font-mono text-brand">0.5</td>
+                    <td className="py-3 text-right font-mono text-brand">{c}</td>
                   </tr>
                 ))}
               </tbody>
@@ -368,7 +414,7 @@ answers.is_complaint.noul; // 0.94`}
                 轉人工、請使用者補充，或退回原本流程。官方範例以 0.5 當底線。
               </Point>
               <Point n="2" title="要動作時，用 probability 設門檻">
-                choice 看要採用的那個選項的機率；noul 直接看 noul。風險越高，門檻越高。
+                choice 看要採用的那個選項的機率；noul 直接看 noul；score 若取決於某一級，就看那一級的機率。風險越高，門檻越高。
               </Point>
             </div>
             <p className="text-[24px] text-navy/50">來源：docs.typesafe.ai〈Confidence〉〈Confidence routing〉</p>
